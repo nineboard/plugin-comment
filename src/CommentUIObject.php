@@ -5,30 +5,32 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
 namespace Xpressengine\Plugins\Comment;
 
-use Xpressengine\UIObject\AbstractUIObject;
 use View;
+use XeEditor;
 use XeFrontend;
 use XeSkin;
-use XeEditor;
 use Xpressengine\Plugins\Comment\Exceptions\InvalidArgumentException;
+use Xpressengine\UIObject\AbstractUIObject;
 
 /**
  * CommentUIObject
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class CommentUIObject extends AbstractUIObject
@@ -47,6 +49,7 @@ class CommentUIObject extends AbstractUIObject
      * Rendering the view
      *
      * @return string
+     *
      * @throws InvalidArgumentException
      */
     public function render()
@@ -54,7 +57,7 @@ class CommentUIObject extends AbstractUIObject
         /** @var CommentUsable $target */
         $target = $this->arguments['target'];
 
-        if (!$target instanceof CommentUsable) {
+        if (! $target instanceof CommentUsable) {
             $e = new InvalidArgumentException;
             $e->setMessage(xe_trans('comment::InstanceMust', ['name' => 'CommentUsable::class']));
 
@@ -75,15 +78,15 @@ class CommentUIObject extends AbstractUIObject
 
         $contentStyle = [];
         if ($fontSize) {
-            $contentStyle[] = 'font-size: ' . $fontSize . ';';
+            $contentStyle[] = 'font-size: '.$fontSize.';';
         }
         if ($fontFamily) {
-            $contentStyle[] = 'font-family: ' . $fontFamily . ';';
+            $contentStyle[] = 'font-family: '.$fontFamily.';';
         }
         if ($contentStyle) {
-            app('xe.frontend')->html('xe.content.style.' . $instanceId)->content('
+            app('xe.frontend')->html('xe.content.style.'.$instanceId)->content('
                 <style>
-                    .xe-content-' . $instanceId . ' {' . implode($contentStyle) . '}
+                    .xe-content-'.$instanceId.' {'.implode($contentStyle).'}
                 </style>
             ')->appendTo('head')->load();
         }
@@ -96,7 +99,7 @@ class CommentUIObject extends AbstractUIObject
                 'removeType' => $config->get('removeType'),
                 'reverse' => $config->get('reverse'),
                 'editor' => null,
-            ]
+            ],
         ];
 
         /** @var \Xpressengine\Editor\AbstractEditor $editor */
@@ -124,7 +127,7 @@ class CommentUIObject extends AbstractUIObject
             'target' => $target,
             'editor' => $editor,
             'inner' => $view,
-            'props' => $props
+            'props' => $props,
         ]);
     }
 

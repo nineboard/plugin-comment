@@ -76,7 +76,7 @@ return [
             'ko' => '삭제방식',
             'en' => 'Remove type',
         ],
-        
+
         'explainRemoveType' => [
             'ko' => '하위 댓글이 존재하는 글을 삭제하는 방식을 선택합니다.',
             'en' => 'Select how to remove the comment that has reply.',
@@ -95,7 +95,7 @@ return [
             'manage' => [
                 'ko' => '관리 권한',
                 'en' => 'Manage permission',
-            ]
+            ],
         ],
 
         'all' => [
@@ -149,10 +149,10 @@ return [
         'en' => 'Removed content',
     ],
 
-//    'blindContent' => [
-//        'ko' => '숨김처리된 내용입니다.',
-//        'en' => 'Blind content',
-//    ],
+    //    'blindContent' => [
+    //        'ko' => '숨김처리된 내용입니다.',
+    //        'en' => 'Blind content',
+    //    ],
 
     'secretContent' => [
         'ko' => '비밀 댓글 입니다.',
@@ -184,7 +184,7 @@ return [
         'en' => 'Configuration values was something wrong.',
     ],
 
-    'instanceIdGenerateFail'=> [
+    'instanceIdGenerateFail' => [
         'ko' => '인스턴스 아이디를 생성하는데 실패했습니다.',
         'en' => 'Failed to create an instance ID.',
     ],
@@ -194,10 +194,10 @@ return [
         'en' => 'Submit',
     ],
 
-//    'allCount' => [
-//        'ko' => '댓글',
-//        'en' => 'All',
-//    ],
+    //    'allCount' => [
+    //        'ko' => '댓글',
+    //        'en' => 'All',
+    //    ],
 
     'viewMore' => [
         'ko' => '더보기',
@@ -262,7 +262,7 @@ return [
         'delete' => [
             'ko' => '삭제일',
             'en' => 'Deleted At',
-        ]
+        ],
     ],
 
     'ip' => [
@@ -319,50 +319,50 @@ return [
     ],
     'approveStatusRejected' => [
         'ko' => '반려',
-        'en' => 'rejected'
+        'en' => 'rejected',
     ],
     'approveStatusWaiting' => [
         'ko' => '대기',
-        'en' => 'waiting'
+        'en' => 'waiting',
     ],
     'approveStatusApproved' => [
         'ko' => '승인',
-        'en' => 'approved'
+        'en' => 'approved',
     ],
     'displayStatusHidden' => [
         'ko' => '숨김',
-        'en' => 'hidden'
+        'en' => 'hidden',
     ],
     'displayStatusSecret' => [
         'ko' => '비밀',
-        'en' => 'secret'
+        'en' => 'secret',
     ],
     'displayStatusVisible' => [
         'ko' => '표시',
-        'en' => 'visible'
+        'en' => 'visible',
     ],
     'select' => [
         'ko' => '선택',
-        'en' => 'Select'
+        'en' => 'Select',
     ],
     'status' => [
         'ko' => '상태',
-        'en' => 'Status'
+        'en' => 'Status',
     ],
     'totalCommentCount' => [
         'ko' => '전체 댓글 수',
-        'en' => 'Number of total comments'
+        'en' => 'Number of total comments',
     ],
     'searchCommentCount' => [
         'ko' => '검색된 댓글 수',
-        'en' => 'Number of searched comments'
+        'en' => 'Number of searched comments',
     ],
     'deletedPost' => [
         'ko' => '삭제된 게시물',
-        'en' => 'Deleted post'
+        'en' => 'Deleted post',
     ],
     'notAllowedComment' => [
         'ko' => '해당 게시물이 댓글을 허용하지 않습니다.',
-        'en' => 'This document does not allow comments.'
-    ]
+        'en' => 'This document does not allow comments.',
+    ],
 ];

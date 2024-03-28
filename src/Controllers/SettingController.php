@@ -5,10 +5,11 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
@@ -20,8 +21,6 @@ use App\Http\Sections\EditorSection;
 use App\Http\Sections\SkinSection;
 use App\Http\Sections\ToggleMenuSection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use XeDB;
-use XeMenu;
 use XePresenter;
 use Xpressengine\Http\Request;
 use Xpressengine\Permission\PermissionSupport;
@@ -31,20 +30,21 @@ use Xpressengine\Plugins\Comment;
  * SettingController
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class SettingController extends Controller
 {
     use PermissionSupport;
 
-    /** @var Comment\Plugin  */
+    /** @var Comment\Plugin */
     protected $plugin;
 
-    /** @var Comment\Handler  */
+    /** @var Comment\Handler */
     protected $handler;
 
     /**
@@ -59,7 +59,7 @@ class SettingController extends Controller
         $this->middleware(function ($request, $next) {
             if ($targetInstanceId = $request->route()->parameter('targetInstanceId')) {
                 if (! $this->handler->existInstance($targetInstanceId)) {
-                    throw new NotFoundHttpException(sprintf("Not Found Comment %s Instance", $targetInstanceId));
+                    throw new NotFoundHttpException(sprintf('Not Found Comment %s Instance', $targetInstanceId));
                 }
             }
 
@@ -70,8 +70,7 @@ class SettingController extends Controller
     /**
      * get config
      *
-     * @param string $targetInstanceId target instance id
-     *
+     * @param  string  $targetInstanceId  target instance id
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function getConfig($targetInstanceId)
@@ -87,9 +86,8 @@ class SettingController extends Controller
     /**
      * post config
      *
-     * @param Request $request          request
-     * @param string  $targetInstanceId target instance id
-     *
+     * @param  Request  $request  request
+     * @param  string  $targetInstanceId  target instance id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postConfig(Request $request, $targetInstanceId)
@@ -104,8 +102,7 @@ class SettingController extends Controller
     /**
      * get perm
      *
-     * @param string $targetInstanceId target instance id
-     *
+     * @param  string  $targetInstanceId  target instance id
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function getPerm($targetInstanceId)
@@ -124,9 +121,8 @@ class SettingController extends Controller
     /**
      * post perm
      *
-     * @param Request $request          request
-     * @param string  $targetInstanceId target instance id
-     *
+     * @param  Request  $request  request
+     * @param  string  $targetInstanceId  target instance id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postPerm(Request $request, $targetInstanceId)
@@ -143,8 +139,7 @@ class SettingController extends Controller
     /**
      * get skin
      *
-     * @param string $targetInstanceId target instance id
-     *
+     * @param  string  $targetInstanceId  target instance id
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function getSkin($targetInstanceId)
@@ -157,8 +152,7 @@ class SettingController extends Controller
     /**
      * get editor
      *
-     * @param string $targetInstanceId target instance id
-     *
+     * @param  string  $targetInstanceId  target instance id
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function getEditor($targetInstanceId)
@@ -171,8 +165,7 @@ class SettingController extends Controller
     /**
      * get DF
      *
-     * @param string $targetInstanceId target instance id
-     *
+     * @param  string  $targetInstanceId  target instance id
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function getDF($targetInstanceId)
@@ -190,8 +183,7 @@ class SettingController extends Controller
     /**
      * get TM
      *
-     * @param string $targetInstanceId target instance id
-     *
+     * @param  string  $targetInstanceId  target instance id
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function getTM($targetInstanceId)
@@ -217,8 +209,7 @@ class SettingController extends Controller
     /**
      * post global config
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postGlobalConfig(Request $request)
@@ -245,8 +236,7 @@ class SettingController extends Controller
     /**
      * post global perm
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postGlobalPerm(Request $request)
@@ -271,8 +261,7 @@ class SettingController extends Controller
     /**
      * config 설정 페이지로 redirection
      *
-     * @param string $targetInstanceId target instance id
-     *
+     * @param  string  $targetInstanceId  target instance id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function redirectToConfig($targetInstanceId)

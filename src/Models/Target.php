@@ -5,10 +5,11 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
@@ -26,10 +27,11 @@ use Xpressengine\User\UserInterface;
  * @property User|null $author
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class Target extends DynamicModel
@@ -62,6 +64,7 @@ class Target extends DynamicModel
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     *
      * @deprecated since 0.9.18
      */
     public function author()
@@ -73,11 +76,12 @@ class Target extends DynamicModel
      * Returns the author
      *
      * @return UserInterface
+     *
      * @deprecated since 0.9.18
      */
     public function getAuthor()
     {
-        if (!$author = $this->getRelationValue('author')) {
+        if (! $author = $this->getRelationValue('author')) {
             $author = new UnknownUser();
         }
 

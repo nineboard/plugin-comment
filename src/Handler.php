@@ -5,10 +5,11 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
@@ -18,6 +19,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Session\Store as SessionStore;
 use Xpressengine\Config\ConfigEntity;
 use Xpressengine\Config\ConfigManager;
+use Xpressengine\Counter\Counter;
 use Xpressengine\Counter\Models\CounterLog;
 use Xpressengine\Document\DocumentHandler;
 use Xpressengine\Http\Request;
@@ -27,20 +29,20 @@ use Xpressengine\Permission\PermissionHandler;
 use Xpressengine\Plugins\Comment\Exceptions\InstanceIdGenerateFailException;
 use Xpressengine\Plugins\Comment\Exceptions\WrongConfigurationException;
 use Xpressengine\Plugins\Comment\Models\Comment;
+use Xpressengine\Plugins\Comment\Plugin as CommentPlugin;
+use Xpressengine\User\GuardInterface as Authenticator;
 use Xpressengine\User\Models\Guest;
 use Xpressengine\User\UserInterface;
-use Xpressengine\User\GuardInterface as Authenticator;
-use Xpressengine\Counter\Counter;
-use Xpressengine\Plugins\Comment\Plugin as CommentPlugin;
 
 /**
  * Handler
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class Handler
@@ -86,19 +88,19 @@ class Handler
         'secret' => false,
         'perPage' => 20,
         'removeType' => self::REMOVE_BATCH,
-        'reverse' => false
+        'reverse' => false,
     ];
 
     /**
      * Handler constructor.
      *
-     * @param DocumentHandler   $documents   document handler
-     * @param SessionStore      $session     session store
-     * @param Counter           $counter     counter
-     * @param Authenticator     $auth        auth
-     * @param PermissionHandler $permissions permission handler
-     * @param ConfigManager     $configs     config manager
-     * @param Keygen            $keygen      keygen
+     * @param  DocumentHandler  $documents  document handler
+     * @param  SessionStore  $session  session store
+     * @param  Counter  $counter  counter
+     * @param  Authenticator  $auth  auth
+     * @param  PermissionHandler  $permissions  permission handler
+     * @param  ConfigManager  $configs  config manager
+     * @param  Keygen  $keygen  keygen
      */
     public function __construct(
         DocumentHandler $documents,
@@ -121,9 +123,8 @@ class Handler
     /**
      * 새로운 인스턴스 설정
      *
-     * @param string $targetInstanceId target instance identifier
-     * @param bool   $division         if true, set table division
-     *
+     * @param  string  $targetInstanceId  target instance identifier
+     * @param  bool  $division  if true, set table division
      * @return void
      */
     public function createInstance($targetInstanceId, $division = false)
@@ -147,9 +148,8 @@ class Handler
     /**
      * 대상 인스턴스와 댓글 인스턴스 맵핑
      *
-     * @param string $targetInstanceId  target instance identifier
-     * @param string $commentInstanceId comment instance identifier
-     *
+     * @param  string  $targetInstanceId  target instance identifier
+     * @param  string  $commentInstanceId  comment instance identifier
      * @return void
      */
     protected function instanceMapping($targetInstanceId, $commentInstanceId)
@@ -169,7 +169,7 @@ class Handler
      */
     public function getInstanceMap()
     {
-        if (!$this->instanceMap) {
+        if (! $this->instanceMap) {
             $this->instanceMap = [];
             $config = $this->configs->get('comment_map');
             foreach ($config as $target => $id) {
@@ -183,8 +183,7 @@ class Handler
     /**
      * Get instance id by target instance id
      *
-     * @param string $targetInstanceId target instance identifier
-     *
+     * @param  string  $targetInstanceId  target instance identifier
      * @return string|null
      */
     public function getInstanceId($targetInstanceId)
@@ -197,8 +196,7 @@ class Handler
     /**
      * Get target instance id by comment instance id
      *
-     * @param string $instanceId comment instance identifier
-     *
+     * @param  string  $instanceId  comment instance identifier
      * @return string|null
      */
     public function getTargetInstanceId($instanceId)
@@ -214,28 +212,26 @@ class Handler
     /**
      * Get key for config
      *
-     * @param string|null $instanceId comment instance identifier
-     *
+     * @param  string|null  $instanceId  comment instance identifier
      * @return string
      */
     protected function getKeyForConfig($instanceId = null)
     {
-        return static::PLUGIN_PREFIX . ($instanceId ? '.' . $instanceId : '');
+        return static::PLUGIN_PREFIX.($instanceId ? '.'.$instanceId : '');
     }
 
     /**
      * 설정 등록
      *
-     * @param string $instanceId  comment instance identifier
-     * @param array  $information config data
-     *
+     * @param  string  $instanceId  comment instance identifier
+     * @param  array  $information  config data
      * @return void
      */
     public function configure($instanceId, array $information)
     {
         $key = $this->getKeyForConfig($instanceId);
 
-        if (!$config = $this->configs->get($key)) {
+        if (! $config = $this->configs->get($key)) {
             throw new \RuntimeException('Instance was not created');
         }
 
@@ -254,8 +250,7 @@ class Handler
     /**
      * 인스턴스 유무
      *
-     * @param string $instanceId instance identifier
-     *
+     * @param  string  $instanceId  instance identifier
      * @return bool
      */
     public function existInstance($instanceId)
@@ -272,15 +267,15 @@ class Handler
     /**
      * instance 에 속한 comment 를 제거함, table 도 삭제 됨
      *
-     * @param string $instanceId instance identifier
-     *
+     * @param  string  $instanceId  instance identifier
      * @return void
+     *
      * @throws \Exception
      */
     public function drop($instanceId)
     {
         $key = $this->getKeyForConfig($instanceId);
-        if (!$config = $this->configs->get($key)) {
+        if (! $config = $this->configs->get($key)) {
             throw new \Exception();
         }
 
@@ -296,8 +291,7 @@ class Handler
     /**
      * Get config
      *
-     * @param string|null $instanceId comment instance identifier
-     *
+     * @param  string|null  $instanceId  comment instance identifier
      * @return \Xpressengine\Config\ConfigEntity
      */
     public function getConfig($instanceId = null)
@@ -317,12 +311,11 @@ class Handler
     /**
      * 등록
      *
-     * @param array              $inputs inputs
-     * @param UserInterface|null $user   user object
-     *
+     * @param  array  $inputs  inputs
+     * @param  UserInterface|null  $user  user object
      * @return Comment
      */
-    public function create(array $inputs, UserInterface $user = null)
+    public function create(array $inputs, ?UserInterface $user = null)
     {
         $inputs['type'] = CommentPlugin::getId();
         $inputs['title'] = $inputs['title'] ?? '';
@@ -330,7 +323,7 @@ class Handler
         $inputs['certify_key'] = $inputs['certify_key'] ?? '';
 
         $user = $user ?: $this->auth->user();
-        if (!$user instanceof Guest) {
+        if (! $user instanceof Guest) {
             $inputs['user_id'] = $user->getId();
             $inputs['writer'] = $user->getDisplayName();
         } else {
@@ -343,7 +336,7 @@ class Handler
         $comment->target()->create([
             'target_id' => $inputs['target_id'],
             'target_author_id' => $inputs['target_author_id'],
-            'target_type' => $inputs['target_type']
+            'target_type' => $inputs['target_type'],
         ]);
 
         if ($user instanceof Guest) {
@@ -361,8 +354,7 @@ class Handler
     /**
      * 수정
      *
-     * @param Comment $comment comment object
-     *
+     * @param  Comment  $comment  comment object
      * @return Comment
      */
     public function put(Comment $comment)
@@ -377,8 +369,7 @@ class Handler
     /**
      * 휴지통으로 이동
      *
-     * @param Comment $comment comment object
-     *
+     * @param  Comment  $comment  comment object
      * @return Comment
      */
     public function trash(Comment $comment)
@@ -394,7 +385,7 @@ class Handler
             if ($config->get('removeType') === static::REMOVE_BATCH) {
                 $this->createModel()->newQuery()
                     ->where('head', $comment->head)
-                    ->where('reply', 'like', $comment->reply . str_repeat('_', Comment::getReplyCharLen()))
+                    ->where('reply', 'like', $comment->reply.str_repeat('_', Comment::getReplyCharLen()))
                     ->get()->each(function ($child) {
                         $this->trash($child);
                     });
@@ -413,19 +404,18 @@ class Handler
     /**
      * 휴지통에서 복구
      *
-     * @param Comment $comment comment object
-     *
+     * @param  Comment  $comment  comment object
      * @return Comment|false
      */
     public function restore(Comment $comment)
     {
-        if (!empty($comment->reply)) {
+        if (! empty($comment->reply)) {
             $parent = $this->createModel($comment->instance_id)->newQuery()
                 ->where('head', $comment->head)
                 ->where('reply', substr($comment->reply, 0, -1 * Comment::getReplyCharLen()))
                 ->first();
 
-            if (!$parent || $parent->display != Comment::DISPLAY_VISIBLE) {
+            if (! $parent || $parent->display != Comment::DISPLAY_VISIBLE) {
                 return false;
             }
         }
@@ -438,9 +428,9 @@ class Handler
     /**
      * 삭제
      *
-     * @param Comment $comment comment object
-     *
+     * @param  Comment  $comment  comment object
      * @return bool
+     *
      * @throws \Exception
      */
     public function remove(Comment $comment)
@@ -448,7 +438,7 @@ class Handler
         if ($comment->status === Comment::STATUS_TRASH && $comment->display === Comment::DISPLAY_HIDDEN) {
             $this->createModel($comment->instance_id)->newQuery()
                 ->where('head', $comment->head)
-                ->where('reply', 'like', $comment->reply . str_repeat('_', Comment::getReplyCharLen()))
+                ->where('reply', 'like', $comment->reply.str_repeat('_', Comment::getReplyCharLen()))
                 ->get()->each(function ($child) {
                     $this->remove($child);
                 });
@@ -464,8 +454,7 @@ class Handler
     /**
      * 승인
      *
-     * @param Comment $comment comment object
-     *
+     * @param  Comment  $comment  comment object
      * @return Comment
      */
     public function approve(Comment $comment)
@@ -476,8 +465,7 @@ class Handler
     /**
      * 승인 반려
      *
-     * @param Comment $comment comment object
-     *
+     * @param  Comment  $comment  comment object
      * @return Comment
      */
     public function reject(Comment $comment)
@@ -494,16 +482,15 @@ class Handler
     /**
      * 자식에 해당하는 댓글이 있는지 확인
      *
-     * @param Comment $comment comment object
-     *
+     * @param  Comment  $comment  comment object
      * @return bool
      */
     protected function hasChild(Comment $comment)
     {
         return $this->createModel($comment->instance_id)->newQuery()
-                ->where('head', $comment->head)
-                ->where('reply', 'like', $comment->reply . str_repeat('_', Comment::getReplyCharLen()))
-                ->count() > 0;
+            ->where('head', $comment->head)
+            ->where('reply', 'like', $comment->reply.str_repeat('_', Comment::getReplyCharLen()))
+            ->count() > 0;
     }
 
     /**
@@ -513,21 +500,20 @@ class Handler
      */
     protected function getKeyForCertified()
     {
-        return static::PLUGIN_PREFIX . '.certified';
+        return static::PLUGIN_PREFIX.'.certified';
     }
 
     /**
      * 현재 사용자에 해당 댓글이 인증되었다고 표시함
      *
-     * @param Comment $comment comment instance
-     *
+     * @param  Comment  $comment  comment instance
      * @return void
      */
     public function certified(Comment $comment)
     {
         $key = $this->getKeyForCertified();
 
-        if (!$data = $this->session->get($key)) {
+        if (! $data = $this->session->get($key)) {
             $data = [];
         }
 
@@ -537,27 +523,25 @@ class Handler
     /**
      * 현재 사용자가 해당 댓글에 인증이 되었는지 판별
      *
-     * @param Comment $comment comment instance
-     *
+     * @param  Comment  $comment  comment instance
      * @return bool
      */
     public function isCertified(Comment $comment)
     {
         $data = $this->session->get($this->getKeyForCertified());
 
-        return !(!$data || !isset($data[$comment->id]) || $data[$comment->id] < time());
+        return ! (! $data || ! isset($data[$comment->id]) || $data[$comment->id] < time());
     }
 
     /**
      * 찬성 or 추천 or 좋아요
      *
-     * @param Comment            $comment comment entity
-     * @param string             $option  'assent' or 'dissent'
-     * @param UserInterface|null $author  user instance
-     *
+     * @param  Comment  $comment  comment entity
+     * @param  string  $option  'assent' or 'dissent'
+     * @param  UserInterface|null  $author  user instance
      * @return bool
      */
-    public function addVote(Comment $comment, $option, UserInterface $author = null)
+    public function addVote(Comment $comment, $option, ?UserInterface $author = null)
     {
         $author = $author ?: $this->auth->user();
 
@@ -578,27 +562,25 @@ class Handler
     /**
      * 투표 가능 여부 확인
      *
-     * @param Comment       $comment comment object
-     * @param UserInterface $author  user
-     * @param String        $option  option (assent or dissent)
-     *
+     * @param  Comment  $comment  comment object
+     * @param  UserInterface  $author  user
+     * @param  string  $option  option (assent or dissent)
      * @return bool
      */
     private function isVoteable(Comment $comment, UserInterface $author, $option)
     {
-        return !$this->counter->has($comment->id, $author, $option);
+        return ! $this->counter->has($comment->id, $author, $option);
     }
 
     /**
      * 반대 or 비추천 or 싫어요
      *
-     * @param Comment            $comment comment entity
-     * @param string             $option  'assent' or 'dissent'
-     * @param UserInterface|null $author  user instance
-     *
+     * @param  Comment  $comment  comment entity
+     * @param  string  $option  'assent' or 'dissent'
+     * @param  UserInterface|null  $author  user instance
      * @return bool
      */
-    public function removeVote(Comment $comment, $option, UserInterface $author = null)
+    public function removeVote(Comment $comment, $option, ?UserInterface $author = null)
     {
         $author = $author ?: $this->auth->user();
 
@@ -619,8 +601,7 @@ class Handler
     /**
      * 값에 따른 컬럼명 반환
      *
-     * @param string $opt 'assent' or 'dissent'
-     *
+     * @param  string  $opt  'assent' or 'dissent'
      * @return string
      */
     private function voteOptToColumn($opt)
@@ -639,9 +620,8 @@ class Handler
     /**
      * 투표자 목록 반환
      *
-     * @param Comment $comment comment object
-     * @param string  $option  'assent' or 'dissent'
-     *
+     * @param  Comment  $comment  comment object
+     * @param  string  $option  'assent' or 'dissent'
      * @return array
      */
     public function voteUsers(Comment $comment, $option)
@@ -652,9 +632,8 @@ class Handler
     /**
      * 투표자 수 반환
      *
-     * @param Comment $comment comment object
-     * @param string  $option  'assent' or 'dissent'
-     *
+     * @param  Comment  $comment  comment object
+     * @param  string  $option  'assent' or 'dissent'
      * @return int
      */
     public function voteUserCount(Comment $comment, $option)
@@ -665,13 +644,12 @@ class Handler
     /**
      * 현재 사용자의 투표정보 주입
      *
-     * @param Comment $comment comment object
-     *
+     * @param  Comment  $comment  comment object
      * @return void
      */
     public function bindUserVote(Comment $comment)
     {
-        if (!$this->auth->guest() && $log = $this->counter->getByName($comment->id, $this->auth->user())) {
+        if (! $this->auth->guest() && $log = $this->counter->getByName($comment->id, $this->auth->user())) {
             $comment->setVoteType($log->counter_option);
         }
     }
@@ -679,11 +657,10 @@ class Handler
     /**
      * 투표 목록
      *
-     * @param Comment     $comment comment object
-     * @param string      $option  'assent' or 'dissent'
-     * @param string|null $startId start id
-     * @param int         $limit   limit count
-     *
+     * @param  Comment  $comment  comment object
+     * @param  string  $option  'assent' or 'dissent'
+     * @param  string|null  $startId  start id
+     * @param  int  $limit  limit count
      * @return mixed
      */
     public function votedList(Comment $comment, $option, $startId = null, $limit = 10)
@@ -701,14 +678,14 @@ class Handler
     /**
      * 대상 객체에 속하는 댓글을 이동시킴
      *
-     * @param CommentUsable $target comment usable instance
-     *
+     * @param  CommentUsable  $target  comment usable instance
      * @return void
+     *
      * @throws \Exception
      */
     public function moveByTarget(CommentUsable $target)
     {
-        if (!$newInstanceId = $this->getInstanceId($target->getInstanceId())) {
+        if (! $newInstanceId = $this->getInstanceId($target->getInstanceId())) {
             throw new \Exception;
         }
 
@@ -737,21 +714,21 @@ class Handler
     /**
      * Get key for permission
      *
-     * @param string|null $instanceId comment instance id
-     *
+     * @param  string|null  $instanceId  comment instance id
      * @return string
      */
     public function getKeyForPerm($instanceId = null)
     {
         $name = static::PLUGIN_PREFIX;
 
-        return $instanceId === null ? $name : $name . '.' . $instanceId;
+        return $instanceId === null ? $name : $name.'.'.$instanceId;
     }
 
     /**
      * Create new instance id
      *
      * @return string
+     *
      * @throws InstanceIdGenerateFailException
      */
     protected function createInstanceId()
@@ -774,8 +751,7 @@ class Handler
     /**
      * Create model
      *
-     * @param string $instanceId comment instance id
-     *
+     * @param  string  $instanceId  comment instance id
      * @return Comment
      */
     public function createModel($instanceId = null)
@@ -805,21 +781,17 @@ class Handler
     /**
      * Set model
      *
-     * @param string $model comment model class
-     *
+     * @param  string  $model  comment model class
      * @return void
      */
     public function setModel($model)
     {
-        $this->model = '\\' . ltrim($model, '\\');
+        $this->model = '\\'.ltrim($model, '\\');
     }
 
     /**
      * Get Comment Items
      *
-     * @param Request $request
-     * @param ConfigEntity $config
-     * @param $query
      * @return Paginator
      */
     public function getItems(Request $request, ConfigEntity $config, $query)
@@ -858,7 +830,7 @@ class Handler
         $query->with([
             'author',
             'files',
-            'target.commentable'
+            'target.commentable',
         ]);
 
         $query->orderBy('head', 'desc')->orderBy('reply', $direction);
@@ -876,7 +848,7 @@ class Handler
 
             $comments->each(function (Comment $comment) use ($commentVoteCounterLogs) {
                 $commentVoteCounterLog = $commentVoteCounterLogs->first(
-                    function(CounterLog $counterLog) use ($comment) {
+                    function (CounterLog $counterLog) use ($comment) {
                         return $counterLog->target_id === $comment->id;
                     }
                 );

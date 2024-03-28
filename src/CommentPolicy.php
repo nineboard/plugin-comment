@@ -5,10 +5,11 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
@@ -18,17 +19,17 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Xpressengine\Permission\Instance;
 use Xpressengine\Plugins\Comment\Models\Comment;
 use Xpressengine\User\Models\Guest;
-use Xpressengine\User\Models\UnknownUser;
 use Xpressengine\User\UserInterface;
 
 /**
  * CommentPolicy
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class CommentPolicy
@@ -42,8 +43,8 @@ class CommentPolicy
     /**
      * CommentPolicy constructor.
      *
-     * @param Gate    $gate    gate
-     * @param Handler $handler comment Handler
+     * @param  Gate  $gate  gate
+     * @param  Handler  $handler  comment Handler
      */
     public function __construct(Gate $gate, Handler $handler)
     {
@@ -54,9 +55,8 @@ class CommentPolicy
     /**
      * read
      *
-     * @param UserInterface $user    user
-     * @param Comment       $comment comment model
-     *
+     * @param  UserInterface  $user  user
+     * @param  Comment  $comment  comment model
      * @return bool
      */
     public function read(UserInterface $user, Comment $comment)
@@ -70,7 +70,7 @@ class CommentPolicy
         }
 
         if ($comment->display === Comment::DISPLAY_SECRET
-            && !$user->isManager()
+            && ! $user->isManager()
             && $user->getId() !== $comment->getAuthor()->getId()
             && $user->getId() !== $comment->getTarget()->getAuthor()->getId()
         ) {
@@ -83,9 +83,8 @@ class CommentPolicy
     /**
      * update
      *
-     * @param UserInterface $user    user
-     * @param Comment       $comment comment model
-     *
+     * @param  UserInterface  $user  user
+     * @param  Comment  $comment  comment model
      * @return bool
      */
     public function update(UserInterface $user, Comment $comment)
@@ -96,9 +95,8 @@ class CommentPolicy
     /**
      * delete
      *
-     * @param UserInterface $user    user
-     * @param Comment       $comment comment model
-     *
+     * @param  UserInterface  $user  user
+     * @param  Comment  $comment  comment model
      * @return bool
      */
     public function delete(UserInterface $user, Comment $comment)
@@ -109,9 +107,8 @@ class CommentPolicy
     /**
      * check update or delete
      *
-     * @param UserInterface $user    user
-     * @param Comment       $comment comment model
-     *
+     * @param  UserInterface  $user  user
+     * @param  Comment  $comment  comment model
      * @return bool
      */
     private function checkUpdateOrDelete(UserInterface $user, Comment $comment)
@@ -139,9 +136,8 @@ class CommentPolicy
     /**
      * update visible
      *
-     * @param UserInterface $user    user
-     * @param Comment       $comment comment model
-     *
+     * @param  UserInterface  $user  user
+     * @param  Comment  $comment  comment model
      * @return bool
      */
     public function updateVisible(UserInterface $user, Comment $comment)
@@ -152,9 +148,8 @@ class CommentPolicy
     /**
      * delete visible
      *
-     * @param UserInterface $user    user
-     * @param Comment       $comment comment model
-     *
+     * @param  UserInterface  $user  user
+     * @param  Comment  $comment  comment model
      * @return bool
      */
     public function deleteVisible(UserInterface $user, Comment $comment)
@@ -165,8 +160,7 @@ class CommentPolicy
     /**
      * is certified
      *
-     * @param Comment $comment comment model
-     *
+     * @param  Comment  $comment  comment model
      * @return mixed
      */
     private function isCertified(Comment $comment)
@@ -177,8 +171,7 @@ class CommentPolicy
     /**
      * set certified resolver
      *
-     * @param callable $resolver reslover
-     *
+     * @param  callable  $resolver  reslover
      * @return void
      */
     public static function setCertifiedResolver(callable $resolver)

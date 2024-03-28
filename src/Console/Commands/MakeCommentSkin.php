@@ -8,8 +8,6 @@ use Exception;
 
 /**
  * Class MakeCommentSkin
- *
- * @package Xpressengine\Plugins\Comment\Console\Commands
  */
 class MakeCommentSkin extends SkinMake
 {
@@ -20,6 +18,7 @@ class MakeCommentSkin extends SkinMake
                         {--id= : The identifier of skin. default "<plugin>@<name>"}
                         {--path= : The path of skin. Enter the path to under the plugin. ex) SomeDir/SkinDir}
                         {--class= : The class name of skin. default "<name>Skin"}';
+
     /**
      * The console command description.
      *
@@ -34,7 +33,7 @@ class MakeCommentSkin extends SkinMake
      */
     protected function getTitleInput()
     {
-        return $this->option('title') ?: studly_case($this->getComponentName()) . ' Comment skin';
+        return $this->option('title') ?: studly_case($this->getComponentName()).' Comment skin';
     }
 
     /**
@@ -50,8 +49,9 @@ class MakeCommentSkin extends SkinMake
     /**
      * makeUsable
      *
-     * @param ArrayAccess|array $attr attributes
+     * @param  ArrayAccess|array  $attr  attributes
      * @return void
+     *
      * @throws Exception
      */
     protected function makeUsable($attr)
@@ -61,7 +61,7 @@ class MakeCommentSkin extends SkinMake
 
         $this->makeSkinClass($attr);
 
-//        rename($path . '/info.stub', $path . '/info.php');
+        //        rename($path . '/info.stub', $path . '/info.php');
 
         $viewFileNames = [
             'certify',
@@ -71,10 +71,10 @@ class MakeCommentSkin extends SkinMake
             'items',
             'reply',
             'voted',
-            'votedModal'
+            'votedModal',
         ];
 
-        $replacePath = $plugin->getId() . '/' . $attr['path'];
+        $replacePath = $plugin->getId().'/'.$attr['path'];
         foreach ($viewFileNames as $fileName) {
             $stub = sprintf('%s/views/%s.blade.stub', $path, $fileName);
             if (file_exists($stub)) {
@@ -95,6 +95,6 @@ class MakeCommentSkin extends SkinMake
      */
     protected function getStubPath()
     {
-        return __DIR__ . '/../stubs/commentSkin';
+        return __DIR__.'/../stubs/commentSkin';
     }
 }

@@ -1,7 +1,11 @@
 {
-  "name": "xpressengine-plugin/comment",
+  "name": "nineboard/plugin-comment",
   "description": "댓글 기능을 제공하는 플러그인 입니다.",
-  "keywords": ["xpressengine bundle", "comment", "comment service"],
+  "keywords": [
+    "xpressengine bundle",
+    "comment",
+    "comment service"
+  ],
   "version": "1.0.6",
   "support": {
     "email": "developers@xpressengine.com"
@@ -35,7 +39,7 @@
           "class": "Xpressengine\\Plugins\\Comment\\Skins\\ManagerSkin",
           "name": "관리자 기본 스킨",
           "description": "댓글 관리자 기본스킨 입니다.",
-          "screenshot" : []
+          "screenshot": []
         },
         "comment/toggleMenu/comment@deleteItem": {
           "class": "Xpressengine\\Plugins\\Comment\\ToggleMenus\\Comments\\DeleteItem",
@@ -54,17 +58,34 @@
     }
   },
   "require": {
-    "xpressengine/xpressengine": "^3.0.2",
-    "xpressengine-plugin/ckeditor": "*"
+    "nineboard/nineboard": "dev-main",
+    "nineboard/plugin-ckeditor": "dev-main"
   },
   "require-dev": {
-    "phpunit/phpunit": "~4.0",
-    "mockery/mockery": "dev-master@dev"
+    "phpunit/phpunit": "^4.0|^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+    "mockery/mockery": "dev-main",
+    "laravel/pint": "^1.0.0"
   },
   "autoload": {
     "psr-4": {
       "Xpressengine\\Plugins\\Comment\\": "src/",
       "Xpressengine\\Plugins\\Comment\\Migrations\\": "migrations/"
+    }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git://github.com/nineboard/nineboard.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git://github.com/nineboard/plugin-ckeditor.git"
+    }
+  ],
+  "config": {
+    "allow-plugins": {
+      "xpressengine/installer": false,
+      "wikimedia/composer-merge-plugin": false
     }
   }
 }

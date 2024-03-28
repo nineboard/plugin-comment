@@ -5,25 +5,22 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
 namespace Xpressengine\Plugins\Comment;
 
-use Illuminate\Console\Application as Artisan;
-use Xpressengine\Permission\Grant;
-use Xpressengine\Plugin\AbstractPlugin;
-use Xpressengine\Plugins\Comment\Migrations\Migration;
-use Xpressengine\Plugins\Comment\Models\Comment;
-use Route;
-use View;
 use Gate;
-use XeDB;
+use Illuminate\Console\Application as Artisan;
+use Route;
+use Schema;
 use XeConfig;
+use XeDB;
 use XeEditor;
 use XeLang;
 use XeRegister;
@@ -33,17 +30,21 @@ use XeTag;
 use XeToggleMenu;
 use XeTrash;
 use XeUI;
-use Schema;
+use Xpressengine\Permission\Grant;
+use Xpressengine\Plugin\AbstractPlugin;
+use Xpressengine\Plugins\Comment\Migrations\Migration;
+use Xpressengine\Plugins\Comment\Models\Comment;
 use Xpressengine\User\Rating;
 
 /**
  * Plugin
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class Plugin extends AbstractPlugin
@@ -51,7 +52,7 @@ class Plugin extends AbstractPlugin
     /**
      * activate
      *
-     * @param null $installedVersion installed version
+     * @param  null  $installedVersion  installed version
      * @return void
      */
     public function activate($installedVersion = null)
@@ -79,14 +80,14 @@ class Plugin extends AbstractPlugin
                 Grant::GROUP_TYPE => [],
                 Grant::USER_TYPE => [],
                 Grant::EXCEPT_TYPE => [],
-                Grant::VGROUP_TYPE => []
+                Grant::VGROUP_TYPE => [],
             ]);
             $grant->set('manage', [
                 Grant::RATING_TYPE => Rating::MANAGER,
                 Grant::GROUP_TYPE => [],
                 Grant::USER_TYPE => [],
                 Grant::EXCEPT_TYPE => [],
-                Grant::VGROUP_TYPE => []
+                Grant::VGROUP_TYPE => [],
             ]);
             app('xe.permission')->register($handler->getKeyForPerm(), $grant);
             // 기본 설정
@@ -152,7 +153,7 @@ class Plugin extends AbstractPlugin
         XeTrash::register(RecycleBin::class);
 
         $commands = [
-            Console\Commands\MakeCommentSkin::class
+            Console\Commands\MakeCommentSkin::class,
         ];
 
         Artisan::starting(static function ($artisan) use ($commands) {
@@ -169,6 +170,7 @@ class Plugin extends AbstractPlugin
         app()->singleton(Handler::class, function ($app) {
             $proxyClass = $app['xe.interception']->proxy(Handler::class, 'XeComment');
             $counter = $app['xe.counter']->make($app['request'], Handler::COUNTER_VOTE, ['assent', 'dissent']);
+
             return new $proxyClass(
                 $app['xe.document'],
                 $app['session.store'],
@@ -217,19 +219,19 @@ class Plugin extends AbstractPlugin
                 'title' => 'comment::comment',
                 'display' => true,
                 'description' => '',
-                'ordering' => 3000
+                'ordering' => 3000,
             ],
             'contents.comment.content' => [
                 'title' => 'comment::commentMange',
                 'display' => true,
                 'description' => '',
-                'ordering' => 3010
+                'ordering' => 3010,
             ],
             'contents.comment.trash' => [
                 'title' => 'comment::trashManage',
                 'display' => true,
                 'description' => '',
-                'ordering' => 3020
+                'ordering' => 3020,
             ],
         ];
         foreach ($menus as $id => $menu) {
@@ -253,7 +255,7 @@ class Plugin extends AbstractPlugin
     }
 
     /**
-     * @param null $installedVersion install version
+     * @param  null  $installedVersion  install version
      * @return void
      */
     public function update($installedVersion = null)
@@ -266,7 +268,7 @@ class Plugin extends AbstractPlugin
         // ver 0.9.13
         $handler = $this->getHandler();
         $permission = app('xe.permission')->getOrNew($handler->getKeyForPerm());
-        if (!$permission['manage']) {
+        if (! $permission['manage']) {
             $grant = new Grant();
             $create = $permission['create'];
             foreach ($create as $type => $value) {
@@ -278,13 +280,13 @@ class Plugin extends AbstractPlugin
                 Grant::GROUP_TYPE => [],
                 Grant::USER_TYPE => [],
                 Grant::EXCEPT_TYPE => [],
-                Grant::VGROUP_TYPE => []
+                Grant::VGROUP_TYPE => [],
             ]);
             app('xe.permission')->register($handler->getKeyForPerm(), $grant);
         }
 
         // after v0.9.18
-        if (!Schema::hasColumn('comment_target', 'target_type')) {
+        if (! Schema::hasColumn('comment_target', 'target_type')) {
             Schema::table('comment_target', function ($table) {
                 $table->string('target_type')->nullable();
             });
@@ -294,7 +296,7 @@ class Plugin extends AbstractPlugin
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function checkUpdated($installedVersion = null)
     {
@@ -306,12 +308,12 @@ class Plugin extends AbstractPlugin
         // ver 0.9.13
         $handler = $this->getHandler();
         $permission = app('xe.permission')->getOrNew($handler->getKeyForPerm());
-        if (!$permission['manage']) {
+        if (! $permission['manage']) {
             return false;
         }
 
         // after v0.9.18
-        if (!Schema::hasColumn('comment_target', 'target_type')) {
+        if (! Schema::hasColumn('comment_target', 'target_type')) {
             return false;
         }
 

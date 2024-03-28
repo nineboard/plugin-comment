@@ -5,10 +5,11 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
@@ -30,10 +31,11 @@ use Xpressengine\User\UserInterface;
  * @property Collection $files
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class Comment extends Document
@@ -71,7 +73,7 @@ class Comment extends Document
 
         return $this->belongsToMany(File::class, $file->getFileableTable(), 'fileable_id', 'file_id')
             ->withPivot('created_at')
-            ->orderBy('pivot_' . 'created_at', 'asc');
+            ->orderBy('pivot_'.'created_at', 'asc');
     }
 
     /**
@@ -81,8 +83,8 @@ class Comment extends Document
      */
     public function getAuthor()
     {
-        if (!$author = $this->getRelationValue('author')) {
-            return !empty($this->user_id) ? new UnknownUser() : new Guest();
+        if (! $author = $this->getRelationValue('author')) {
+            return ! empty($this->user_id) ? new UnknownUser() : new Guest();
         }
 
         return $author;
@@ -98,7 +100,7 @@ class Comment extends Document
         if ($this->status === static::STATUS_TRASH || $this->approved === static::APPROVED_REJECTED) {
             return xe_trans('comment::removeContent');
         }
-        
+
         return $this->content;
     }
 
@@ -125,8 +127,7 @@ class Comment extends Document
     /**
      * set vote type
      *
-     * @param string $type vote type
-     *
+     * @param  string  $type  vote type
      * @return void
      */
     public function setVoteType($type)
@@ -151,8 +152,7 @@ class Comment extends Document
     /**
      * get display status name
      *
-     * @param int $displayCode display status code
-     *
+     * @param  int  $displayCode  display status code
      * @return string
      */
     public function getDisplayStatusName($displayCode)
@@ -160,7 +160,7 @@ class Comment extends Document
         $displayName = [
             self::DISPLAY_HIDDEN => 'comment::displayStatusHidden',
             self::DISPLAY_SECRET => 'comment::displayStatusSecret',
-            self::DISPLAY_VISIBLE => 'comment::displayStatusVisible'
+            self::DISPLAY_VISIBLE => 'comment::displayStatusVisible',
         ];
 
         return $displayName[$displayCode];
@@ -169,8 +169,7 @@ class Comment extends Document
     /**
      * get approve status name
      *
-     * @param int $approveCode approve status code
-     *
+     * @param  int  $approveCode  approve status code
      * @return string
      */
     public function getApproveStatusName($approveCode)
@@ -178,7 +177,7 @@ class Comment extends Document
         $approveName = [
             self::APPROVED_REJECTED => 'comment::approveStatusRejected',
             self::APPROVED_WAITING => 'comment::approveStatusWaiting',
-            self::APPROVED_APPROVED => 'comment::approveStatusApproved'
+            self::APPROVED_APPROVED => 'comment::approveStatusApproved',
         ];
 
         return $approveName[$approveCode];

@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace Xpressengine\Plugins\Comment\ToggleMenus\Comments;
 
 use Xpressengine\Permission\Instance;
-use Xpressengine\Plugins\Comment\Plugin as CommentPlugin;
 use Xpressengine\Plugins\Comment\Handler as CommentHandler;
 use Xpressengine\Plugins\Comment\Models\Comment;
+use Xpressengine\Plugins\Comment\Plugin as CommentPlugin;
 use Xpressengine\ToggleMenu\AbstractToggleMenu;
 
 /**
  * Class EditItem
- *
- * @package Xpressengine\Plugins\Comment\ToggleMenus\Comments
  */
 class EditItem extends AbstractToggleMenu
 {
@@ -26,8 +24,6 @@ class EditItem extends AbstractToggleMenu
 
     /**
      * UpdateItem constructor.
-     *
-     * @param CommentHandler $commentHandler
      */
     public function __construct(CommentHandler $commentHandler)
     {
@@ -36,8 +32,6 @@ class EditItem extends AbstractToggleMenu
 
     /**
      * Delete Toggle Item's title
-     *
-     * @return string
      */
     public static function getTitle(): string
     {
@@ -46,8 +40,6 @@ class EditItem extends AbstractToggleMenu
 
     /**
      * Delete Toggle Item's text
-     *
-     * @return string
      */
     public function getText(): string
     {
@@ -56,8 +48,6 @@ class EditItem extends AbstractToggleMenu
 
     /**
      * getType
-     *
-     * @return string
      */
     public function getType(): string
     {
@@ -66,8 +56,6 @@ class EditItem extends AbstractToggleMenu
 
     /**
      * getAction
-     *
-     * @return string
      */
     public function getAction(): string
     {
@@ -76,8 +64,6 @@ class EditItem extends AbstractToggleMenu
 
     /**
      * getScript
-     *
-     * @return string
      */
     public function getScript(): string
     {
@@ -86,8 +72,6 @@ class EditItem extends AbstractToggleMenu
 
     /**
      * allows
-     *
-     * @return bool
      */
     public function allows(): bool
     {

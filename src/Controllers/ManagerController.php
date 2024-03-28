@@ -5,19 +5,19 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
 namespace Xpressengine\Plugins\Comment\Controllers;
 
 use App\Http\Controllers\Controller;
-use XePresenter;
 use XeConfig;
-use XeDB;
+use XePresenter;
 use Xpressengine\Http\Request;
 use Xpressengine\Menu\MenuHandler;
 use Xpressengine\Menu\Models\MenuItem;
@@ -30,10 +30,11 @@ use Xpressengine\Support\Exceptions\InvalidArgumentException;
  * ManagerController
  *
  * @category Comment
- * @package  Xpressengine\Plugins\Comment\Controllers
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class ManagerController extends Controller
@@ -76,9 +77,8 @@ class ManagerController extends Controller
     /**
      * index
      *
-     * @param Request     $request request
-     * @param MenuHandler $menus   menu handler
-     *
+     * @param  Request  $request  request
+     * @param  MenuHandler  $menus  menu handler
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function index(Request $request, MenuHandler $menus)
@@ -95,7 +95,7 @@ class ManagerController extends Controller
         $statusMessage = xe_trans('comment::status');
 
         if ($options = $request->get('options')) {
-            list($searchField, $searchValue) = explode('|', $options);
+            [$searchField, $searchValue] = explode('|', $options);
 
             $query->where($searchField, $searchValue);
 
@@ -130,7 +130,7 @@ class ManagerController extends Controller
             }
 
             if ($messageType) {
-                $statusMessage = xe_trans('comment::manage.' . $messageType);
+                $statusMessage = xe_trans('comment::manage.'.$messageType);
             }
         }
 
@@ -152,6 +152,7 @@ class ManagerController extends Controller
                 if (isset($menuItems[$index]) === false) {
                     $tmpMenuItem = new MenuItem;
                     $tmpMenuItem->title = $index;
+
                     return $tmpMenuItem;
                 } else {
                     return $menuItems[$index];
@@ -161,7 +162,7 @@ class ManagerController extends Controller
                 if (isset($menuItem->type) == true) {
                     if ($module = $menus->getModuleHandler()->getModuleObject($menuItem->type)) {
                         if ($comment->getTarget() && $item = $module->getTypeItem($comment->getTarget()->id)) {
-                            return app('url')->to($item->getLink($menuItem->route) . '#comment-'.$comment->id);
+                            return app('url')->to($item->getLink($menuItem->route).'#comment-'.$comment->id);
                         }
                     }
                 }
@@ -177,8 +178,7 @@ class ManagerController extends Controller
     /**
      * set approve
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function approve(Request $request)
@@ -214,8 +214,7 @@ class ManagerController extends Controller
     /**
      * to trash
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function toTrash(Request $request)
@@ -238,9 +237,8 @@ class ManagerController extends Controller
     /**
      * trash
      *
-     * @param Request     $request request
-     * @param MenuHandler $menus   menu handler
-     *
+     * @param  Request  $request  request
+     * @param  MenuHandler  $menus  menu handler
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function trash(Request $request, MenuHandler $menus)
@@ -263,6 +261,7 @@ class ManagerController extends Controller
                 if (isset($menuItems[$index]) === false) {
                     $tmpMenuItem = new MenuItem;
                     $tmpMenuItem->title = $index;
+
                     return $tmpMenuItem;
                 } else {
                     return $menuItems[$index];
@@ -274,8 +273,7 @@ class ManagerController extends Controller
     /**
      * destroy
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Request $request)
@@ -296,8 +294,7 @@ class ManagerController extends Controller
     /**
      * restore
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function restore(Request $request)
@@ -320,9 +317,8 @@ class ManagerController extends Controller
     /**
      * make where
      *
-     * @param Comment $query   query
-     * @param Request $request request
-     *
+     * @param  Comment  $query  query
+     * @param  Request  $request  request
      * @return mixed
      */
     protected function makeWhere($query, $request)

@@ -5,40 +5,40 @@
  * PHP version 7
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 
 namespace Xpressengine\Plugins\Comment\Controllers;
 
 use App\Http\Controllers\Controller;
+use Hash;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use XePresenter;
-use Hash;
 use XeDB;
+use XeDynamicField;
+use XeEditor;
+use XePresenter;
 use XeSkin;
 use XeStorage;
-use XeEditor;
 use XeTag;
 use Xpressengine\Editor\PurifierModules\EditorContent;
 use Xpressengine\Http\Request;
 use Xpressengine\Permission\Instance;
 use Xpressengine\Plugins\Comment\CommentUsable;
-use Xpressengine\Plugins\Comment\Exceptions\InvalidArgumentException;
-use Xpressengine\Plugins\Comment\Handler;
-use Xpressengine\Plugins\Comment\Plugin;
-use Xpressengine\Support\Purifier;
 use Xpressengine\Plugins\Comment\Exceptions\BadRequestException;
-use Xpressengine\Plugins\Comment\Models\Comment;
+use Xpressengine\Plugins\Comment\Exceptions\InvalidArgumentException;
 use Xpressengine\Plugins\Comment\Exceptions\NotMatchCertifyKeyException;
 use Xpressengine\Plugins\Comment\Exceptions\UnknownIdentifierException;
-use XeDynamicField;
+use Xpressengine\Plugins\Comment\Handler;
+use Xpressengine\Plugins\Comment\Models\Comment;
+use Xpressengine\Plugins\Comment\Plugin;
+use Xpressengine\Support\Purifier;
 use Xpressengine\Support\PurifierModules\Html5;
 use Xpressengine\User\Models\UnknownUser;
 
@@ -46,10 +46,11 @@ use Xpressengine\User\Models\UnknownUser;
  * UserController
  *
  * @category    Comment
- * @package     Xpressengine\Plugins\Comment
+ *
  * @author      XE Developers <developers@xpressengine.com>
  * @copyright   2019 Copyright XEHub Corp. <https://www.xehub.io>
  * @license     http://www.gnu.org/licenses/lgpl-3.0-standalone.html LGPL
+ *
  * @link        https://xpressengine.io
  */
 class UserController extends Controller
@@ -71,8 +72,7 @@ class UserController extends Controller
     /**
      * index
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function index(Request $request)
@@ -81,8 +81,8 @@ class UserController extends Controller
         $targetId = $request->get('target_id');
         $instanceId = $request->get('instance_id');
 
-        $offsetHead = !empty($request->get('offsetHead')) ? $request->get('offsetHead') : null;
-        $offsetReply = !empty($request->get('offsetReply')) ? $request->get('offsetReply') : null;
+        $offsetHead = ! empty($request->get('offsetHead')) ? $request->get('offsetHead') : null;
+        $offsetReply = ! empty($request->get('offsetReply')) ? $request->get('offsetReply') : null;
 
         $config = $this->handler->getConfig($instanceId);
 
@@ -130,8 +130,7 @@ class UserController extends Controller
     /**
      * append assets to param
      *
-     * @param array $param parameters
-     *
+     * @param  array  $param  parameters
      * @return array
      */
     protected function appendAssetsToParam(array $param)
@@ -147,9 +146,9 @@ class UserController extends Controller
     /**
      * store
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
+     *
      * @throws AuthorizationException
      */
     public function store(Request $request)
@@ -188,14 +187,14 @@ class UserController extends Controller
         /** @var \Xpressengine\Editor\AbstractEditor $editor */
         $editor = XeEditor::get($inputs['instance_id']);
         $inputs['format'] = $editor->htmlable() ? Comment::FORMAT_HTML : Comment::FORMAT_NONE;
-        $inputs['display'] = !!array_get($inputs, 'display') ? Comment::DISPLAY_SECRET : Comment::DISPLAY_VISIBLE;
+        $inputs['display'] = (bool) array_get($inputs, 'display') ? Comment::DISPLAY_SECRET : Comment::DISPLAY_VISIBLE;
 
         /**
          * @deprecated since 0.9.18. no use 'target_author_id' field
          */
         $targetClass = Relation::getMorphedModel($inputs['target_type']) ?: $inputs['target_type'];
         /** @var CommentUsable $targetModel */
-        if (!$targetModel = call_user_func([$targetClass, 'find'], $inputs['target_id'])) {
+        if (! $targetModel = call_user_func([$targetClass, 'find'], $inputs['target_id'])) {
             $e = new InvalidArgumentException;
             $e->setMessage(xe_trans('comment::unknownTargetObject'));
             throw $e;
@@ -232,9 +231,9 @@ class UserController extends Controller
     /**
      * update
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
+     *
      * @throws AuthorizationException
      */
     public function update(Request $request)
@@ -268,7 +267,7 @@ class UserController extends Controller
 
         $model = $this->handler->createModel($instanceId);
         /** @var Comment $comment */
-        if (!$comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first()) {
+        if (! $comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first()) {
             throw new UnknownIdentifierException;
         }
 
@@ -282,7 +281,7 @@ class UserController extends Controller
         $editor = XeEditor::get($instanceId);
         $inputs['format'] = $editor->htmlable() ? Comment::FORMAT_HTML : Comment::FORMAT_NONE;
         if ($comment->display !== Comment::DISPLAY_HIDDEN) {
-            $inputs['display'] = !!array_get($inputs, 'display') ?
+            $inputs['display'] = (bool) array_get($inputs, 'display') ?
                 Comment::DISPLAY_SECRET : Comment::DISPLAY_VISIBLE;
         } else {
             if (isset($inputs['display'])) {
@@ -318,9 +317,9 @@ class UserController extends Controller
     /**
      * destroy
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
+     *
      * @throws AuthorizationException
      */
     public function destroy(Request $request)
@@ -329,7 +328,7 @@ class UserController extends Controller
         $id = $request->get('id');
 
         $model = $this->handler->createModel($instanceId);
-        if (!$comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first()) {
+        if (! $comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first()) {
             throw new UnknownIdentifierException;
         }
 
@@ -341,7 +340,7 @@ class UserController extends Controller
             return $this->getCertifyForm('destroy', $comment);
         }
 
-        if (!$comment = $this->handler->trash($comment)) {
+        if (! $comment = $this->handler->trash($comment)) {
             return XePresenter::makeApi(['success' => false]);
         }
 
@@ -369,9 +368,9 @@ class UserController extends Controller
     /**
      * vote on
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
+     *
      * @throws \Exception
      */
     public function voteOn(Request $request)
@@ -409,9 +408,9 @@ class UserController extends Controller
     /**
      * vote off
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
+     *
      * @throws \Exception
      */
     public function voteOff(Request $request)
@@ -449,8 +448,7 @@ class UserController extends Controller
     /**
      * get voted user list
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed
      */
     public function votedUser(Request $request)
@@ -465,21 +463,20 @@ class UserController extends Controller
 
         $users = new LengthAwarePaginator($users, count($users), 10);
 
-        return api_render(Plugin::getId() . '::views.skin.user.default.voted', [
+        return api_render(Plugin::getId().'::views.skin.user.default.voted', [
             'users' => $users,
             'data' => [
                 'instanceId' => $instanceId,
                 'id' => $id,
                 'option' => $option,
-            ]
+            ],
         ]);
     }
 
     /**
      * voted modal
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed
      */
     public function votedModal(Request $request)
@@ -492,21 +489,20 @@ class UserController extends Controller
         $comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first();
         $count = $this->handler->voteUserCount($comment, $option);
 
-        return api_render(Plugin::getId() . '::views.skin.user.default.votedModal', [
+        return api_render(Plugin::getId().'::views.skin.user.default.votedModal', [
             'count' => $count,
             'data' => [
                 'instanceId' => $instanceId,
                 'id' => $id,
                 'option' => $option,
-            ]
+            ],
         ]);
     }
 
     /**
      * voted list
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     public function votedList(Request $request)
@@ -523,7 +519,7 @@ class UserController extends Controller
 
         $list = [];
         foreach ($logs as $log) {
-            if (!$user = $log->user) {
+            if (! $user = $log->user) {
                 $user = new UnknownUser();
             }
 
@@ -532,7 +528,7 @@ class UserController extends Controller
                 'id' => $user->getId(),
                 'displayName' => $user->getDisplayName(),
                 'profileImage' => $user->getProfileImage(),
-                'createdAt' => (string)$log->created_at,
+                'createdAt' => (string) $log->created_at,
                 'profilePage' => $profilePage,
             ];
         }
@@ -551,15 +547,14 @@ class UserController extends Controller
     /**
      * form
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed
      */
     public function form(Request $request)
     {
         $mode = $request->get('mode');
 
-        $method = 'get' . ucfirst($mode) . 'Form';
+        $method = 'get'.ucfirst($mode).'Form';
 
         return $this->$method($request);
     }
@@ -567,8 +562,7 @@ class UserController extends Controller
     /**
      * get create form
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     protected function getCreateForm(Request $request)
@@ -604,9 +598,9 @@ class UserController extends Controller
     /**
      * get edit form
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
+     *
      * @throws AuthorizationException
      */
     protected function getEditForm(Request $request)
@@ -615,7 +609,7 @@ class UserController extends Controller
         $id = $request->get('id');
 
         $model = $this->handler->createModel($instanceId);
-        if (!$comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first()) {
+        if (! $comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first()) {
             throw new UnknownIdentifierException;
         }
 
@@ -647,9 +641,9 @@ class UserController extends Controller
     /**
      * get reply form
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
+     *
      * @throws AuthorizationException
      */
     protected function getReplyForm(Request $request)
@@ -661,7 +655,7 @@ class UserController extends Controller
         $this->authorize('create', new Instance($this->handler->getKeyForPerm($instanceId)));
 
         $model = $this->handler->createModel($instanceId);
-        if (!$comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first()) {
+        if (! $comment = $model->newQuery()->where('instance_id', $instanceId)->where('id', $id)->first()) {
             throw new UnknownIdentifierException;
         }
 
@@ -683,9 +677,8 @@ class UserController extends Controller
     /**
      * get certify form
      *
-     * @param string  $mode    mode
-     * @param Comment $comment comment model
-     *
+     * @param  string  $mode  mode
+     * @param  Comment  $comment  comment model
      * @return mixed|\Xpressengine\Presenter\Presentable
      */
     protected function getCertifyForm($mode, $comment)
@@ -693,7 +686,7 @@ class UserController extends Controller
         $skin = XeSkin::getAssigned([Plugin::getId(), $comment->instanceId]);
         $content = $skin->setView('certify')->setData([
             'mode' => $mode,
-            'comment' => $comment
+            'comment' => $comment,
         ])->render();
 
         return XePresenter::makeApi(['mode' => 'certify', 'html' => $content]);
@@ -702,9 +695,9 @@ class UserController extends Controller
     /**
      * certify
      *
-     * @param Request $request request
-     *
+     * @param  Request  $request  request
      * @return mixed|\Xpressengine\Presenter\Presentable
+     *
      * @throws AuthorizationException
      */
     public function certify(Request $request)
@@ -719,7 +712,7 @@ class UserController extends Controller
         $inputs = $this->validate($request, $rules);
 
         $model = $this->handler->createModel($inputs['instance_id']);
-        if (!$comment = $model->newQuery()->where('instance_id', $inputs['instance_id'])
+        if (! $comment = $model->newQuery()->where('instance_id', $inputs['instance_id'])
             ->where('id', $inputs['id'])->first()
         ) {
             throw new UnknownIdentifierException;
