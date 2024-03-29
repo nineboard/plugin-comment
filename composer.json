@@ -52,14 +52,11 @@
           "description": "댓글 수정에 대한 토글 메뉴"
         }
       }
-    },
-    "branch-alias": {
-      "dev-master": "0.1.x-dev"
     }
   },
   "require": {
-    "nineboard/nineboard": "dev-main",
-    "nineboard/plugin-ckeditor": "dev-main"
+    "nineboard/nineboard": "^3.0.0",
+    "nineboard/plugin-ckeditor": "^1.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^4.0|^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
